@@ -1,0 +1,26 @@
+name: AWS upload to S3 using Github OIDC 
+on:
+  push
+env:
+  BUCKET_NAME : "examp1e-buck-123azeii"
+  AWS_REGION : "us-east-1"
+  AWS_ASSUME_ROLE: "arn:aws:iam::259743694685:role/github-actions"
+# permission can be added at job level or workflow level
+permissions:
+      id-token: write
+      contents: read    # This is required for actions/checkout@v1
+jobs:
+  S3PackageUpload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v1
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ env.AWS_ASSUME_ROLE }} 
+          aws-region: ${{ env.AWS_REGION }}
+      # Upload a file to AWS s3
+      - name:  Copy index.html to s3
+        run: |
+          aws s3 cp ./index.html s3://${{ env.BUCKET_NAME }}/

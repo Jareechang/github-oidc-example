@@ -1,0 +1,6 @@
+terraform*
+*.terraform
+setup-envs.sh
+*.swp
+.next
+node_modules
